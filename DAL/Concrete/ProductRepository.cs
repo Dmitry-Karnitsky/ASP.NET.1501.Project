@@ -47,7 +47,10 @@ namespace DAL.Concrete
 
         public IEnumerable<DalProduct> GetByPredicate(Expression<Func<DalProduct, bool>> f)
         {
-            return context.Set<Product>().Where(ExpressionTransformer<DalProduct, Product>.Transform(f)).Select(ormproduct => new DalProduct()
+            var transpormer = new ExpressionTransformer<DalProduct, Product>(Expression.Parameter(typeof(Product), f.Parameters[0].Name));
+            var expression = Expression.Lambda<Func<Product, bool>>(transpormer.Visit(f.Body), transpormer.NewParamExpr);
+
+            return context.Set<Product>().Where(expression).Select(ormproduct => new DalProduct()
             {
                 Id = ormproduct.Id,
                 Auction_Cost = ormproduct.Auction_Cost,

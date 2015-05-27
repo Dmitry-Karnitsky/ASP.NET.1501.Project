@@ -22,7 +22,7 @@ namespace MvcPL.Controllers
             return View(service.GetAllEntities()
                 .Select(user => new UserViewModel()
                 {
-                    UserName = user.Login
+                    Name = user.Login
                 }));
         }
 
@@ -33,13 +33,13 @@ namespace MvcPL.Controllers
         }
         
         [HttpPost]
-        public ActionResult Create(RegistrationViewModel user)
+        public ActionResult Create(RegisterModel user)
         {
             
             var blluser = new UserEntity()
             {
                 Login = user.UserName,
-                Role_Id = (int)user.Role,
+                Role_Id = 2, // user
                 RegistryDate = DateTime.Now,
                 Password = "12345",
                 E_mail = "12345"                

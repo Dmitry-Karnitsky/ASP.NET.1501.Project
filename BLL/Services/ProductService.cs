@@ -52,8 +52,9 @@ namespace BLL.Services
 
         public IEnumerable<ProductEntity> GetByPredicate(Expression<Func<ProductEntity, bool>> p)
         {
-            Expression<Func<DalProduct, bool>> expr = ExpressionTransformer<ProductEntity, DalProduct>.Transform(p);
-            return productRepository.GetByPredicate(expr).Select(product => product.ToBllProduct());
+            var transpormer = new ExpressionTransformer<ProductEntity, DalProduct>(Expression.Parameter(typeof(DalProduct), p.Parameters[0].Name));
+            var expression = Expression.Lambda<Func<DalProduct, bool>>(transpormer.Visit(p.Body), transpormer.NewParamExpr);
+            return productRepository.GetByPredicate(expression).Select(product => product.ToBllProduct());
         }
 
         public IEnumerable<ProductEntity> GetProductsSoldByUser(int id)

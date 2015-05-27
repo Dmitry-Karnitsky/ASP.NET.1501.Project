@@ -66,7 +66,9 @@ namespace DAL.Concrete
 
         public IEnumerable<DalUser> GetByPredicate(Expression<Func<DalUser, bool>> f)
         {
-            return context.Set<User>().Where(ExpressionTransformer<DalUser, User>.Transform(f)).Select(ormuser => new DalUser()
+            var transpormer = new ExpressionTransformer<DalUser, User>(Expression.Parameter(typeof(User), f.Parameters[0].Name));
+            var expression = Expression.Lambda<Func<User, bool>>(transpormer.Visit(f.Body), transpormer.NewParamExpr);
+            return context.Set<User>().Where(expression).Select(ormuser => new DalUser()
             {
                 Id = ormuser.Id,
                 Login = ormuser.Login,
@@ -104,7 +106,7 @@ namespace DAL.Concrete
                 Login = e.Login,
                 Role_Id = e.Role_Id,
                 Password = e.Password,
-                RegistryDate = e.RegistryDate,
+                RegistryDate = DateTime.Now,
                 E_mail = e.E_mail                
             };
             context.Set<User>().Add(user);

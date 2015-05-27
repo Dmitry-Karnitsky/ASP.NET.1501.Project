@@ -6,7 +6,7 @@ namespace ORM
     public partial class EntityModel : DbContext
     {
         public EntityModel()
-            : base("name=EntityModel")
+            : base("name=DefaultConnection")
         {
             Debug.WriteLine("Context created!");
         }

@@ -42,7 +42,10 @@ namespace DAL.Concrete
 
         public IEnumerable<DalRole> GetByPredicate(Expression<Func<DalRole, bool>> f)
         {
-            return context.Set<Role>().Where(ExpressionTransformer<DalRole, Role>.Transform(f)).Select(ormrole => new DalRole()
+            var transpormer = new ExpressionTransformer<DalRole, Role>(Expression.Parameter(typeof(Role), f.Parameters[0].Name));
+            var expression = Expression.Lambda<Func<Role, bool>>(transpormer.Visit(f.Body), transpormer.NewParamExpr);
+            
+            return context.Set<Role>().Where(expression).Select(ormrole => new DalRole()
             {
                 Id = ormrole.Id,
                 Name = ormrole.Name            

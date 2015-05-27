@@ -1,0 +1,39 @@
+﻿@model PagedList.IPagedList<MvcPL.Models.ProductsViewModel>
+
+@if (Request.IsAuthenticated)
+{
+    foreach (var item in Model)
+    {
+        <tr>
+            <td>                
+                @Html.ActionLink("Details", "Details", new { id = item.PersonID })                
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Auction_Cost)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+        </tr>
+    }
+}
+else
+{
+foreach (var item in Model)
+{
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Id)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Auction_Cost)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Description)
+        </td>
+    </tr>
+}
+}

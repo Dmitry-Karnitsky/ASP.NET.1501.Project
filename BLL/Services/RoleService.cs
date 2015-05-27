@@ -52,8 +52,9 @@ namespace BLL.Services
 
         public IEnumerable<RoleEntity> GetByPredicate(Expression<Func<RoleEntity, bool>> p)
         {
-            Expression<Func<DalRole, bool>> expr = ExpressionTransformer<RoleEntity, DalRole>.Transform(p);
-            return roleRepository.GetByPredicate(expr).Select(role => role.ToBllRole());
+            var transpormer = new ExpressionTransformer<RoleEntity, DalRole>(Expression.Parameter(typeof(DalRole), p.Parameters[0].Name));
+            var expression = Expression.Lambda<Func<DalRole, bool>>(transpormer.Visit(p.Body), transpormer.NewParamExpr);
+            return roleRepository.GetByPredicate(expression).Select(role => role.ToBllRole());
         }        
     }
 }
